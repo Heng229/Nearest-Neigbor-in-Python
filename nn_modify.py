@@ -1,5 +1,6 @@
 import numpy as np
 import random
+import math
 
 def randomNum(smallest, largest):
     num = random.randint(smallest,largest)
@@ -19,6 +20,55 @@ def getArray(size,large_rela,small_rela):
             if x == size-1 or y == size-1:
                 break
     return array
+
+def getDifference(arr):
+    
+    #Is the array size even or odd
+    even = True if int(arr_size) % 2 == 0 else False
+    count = 0
+    left = 0
+    right = 0
+    
+    #Even and odd have different formula for calculating Z value.
+    if even:
+        half = int(arr_size)/2
+        while count <= int(arr_size):
+            if count == 0: 
+                count += int(half)
+                for x in range (count):
+                    # print(arr[x][1])
+                    left += arr[x][1]
+            else:
+                for x in range (count,int(arr_size)):
+                    # print(arr[x][1])
+                    right += arr[x][1]
+                count += int(half)
+    else:
+        half = math.ceil(int(arr_size)/2)
+        while count <= int(arr_size):
+            if count == 0: 
+                count += int(half)
+                for x in range (count):
+                    # print("Left")
+                    # print(arr[x][1])
+                    left += arr[x][1]
+            else:
+                for x in range (count-1,int(arr_size)):
+                    # print("Right")
+                    # print(arr[x][1])
+                    right += arr[x][1]
+                count += int(half)
+    
+    z = abs(left-right)
+    print("~~~~~~")
+    print("Z Value Calculation")
+    print("~~~~~~")
+    print("Initial State : " + str(arr[0][0]))
+    print("Left : " + str(left))
+    print("Right: " + str(right))
+    print("Z: " + str(z))
+    print("~~~~~~\n")
+    return z
 
 #Get Valid Input from user
 getInput = True
@@ -72,7 +122,7 @@ largest_const = int(rel_largest) + 100
 relation_table_init = getArray(int(arr_size),int(rel_largest),int(rel_smallest))
 z = 0
 allCost = []
-all_solution = []
+all_solution_and_cost = []
 
 # Nearest Neighbor Algorithm
 while z < len(relation_table_init):
@@ -88,10 +138,9 @@ while z < len(relation_table_init):
     visited = []
     solution = []
     x = 0
-    count = 1
-    found_goal = False
+    found_solution = False
     
-    while not found_goal:
+    while not found_solution:
         shortest_to_next = min(relation_table[current_state])
         
         #Delete the current_state from the table left only those unvisited
@@ -104,33 +153,21 @@ while z < len(relation_table_init):
         current_state_temp = current_state
         current_state = temp.index(shortest_to_next)
         
-        #Display each column slowly replace with largest number
-        #print(relation_table)
         x += 1
-        count += 1
-        # print("Visited:")
-        # print(solution)
-        # print("Current:")
-        # print(current_state)
         
         if x < len(relation_table):
             # "Remove" visited by making the column largest number
             relation_table[:,current_state_temp] = largest_const
-            if count == int(arr_size):
-                all_solution.append(solution)
-                count = 0
-                print("COunt = " + str(count))
             continue
         else:
-            found_goal = True
+            print("Solution " + str(z+1))
+            print("`````````")
+            found_solution = True
             z += 1
             # Get the last node coordinate
             last_node = solution[len(relation_table)-1][0]
             # Change the cost of the last node to the cost return initial node to get final solution.
             solution[len(relation_table)-1][1] = relation_table_original[initial_state][last_node]
-            # print(relation_table_original[initial_state])
-            # Display last node back to initial node cost
-            # print(relation_table_original[last_node][initial_state])
             
             #Reset values with orignal values
             print("Solution for starting point: " + str(initial_state))
@@ -138,16 +175,32 @@ while z < len(relation_table_init):
             totalCost = 0
             for path in solution:
                 totalCost += path[1]
-            allCost.append(totalCost)
             print("Total Cost (Initial State: " + str(initial_state) + " )= "+ str(int(totalCost)) +" ")
-            print("====================\n")
+            print(".............\n")
+            
+            #All solution and their total cost in a list.
+            all_solution_and_cost.append([solution,totalCost])
+            allCost.append(totalCost)
 
-
-optimalPath = min(allCost)
-print("\n")
-print("Final Optimal Path Cost:" + str(int(optimalPath)))
-
-
-
+#Z value (Difference between left and right)
+z_value = []
+#Get index of all solution with same lowest cost
+indices_lowest_cost = [i for i, x in enumerate(allCost) if x == min(allCost)]
     
+#Get Z value for each equal lowest cost solution
+for x in indices_lowest_cost:
+    z_value.append([getDifference(all_solution_and_cost[x][0]),x])
 
+#Choose lowest Z value solution with min()
+final_chosen_solution_index = z_value.index(min(z_value))
+final_chosen_solution = all_solution_and_cost[z_value[final_chosen_solution_index][1]]
+
+print("Final Optimal Solution Chosen")
+print("==================")
+print("Solution : ")
+for x in final_chosen_solution[0]:
+    print("Lowest cost from person " + str(x[0]) + " to next person is " + str(x[1]))
+print("Cost : ")
+print(final_chosen_solution[1])
+print("Z Value : ")
+print(int(min(z_value)[0]))
