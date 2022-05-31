@@ -22,14 +22,13 @@ def getArray(size,large_rela,small_rela):
     return array
 
 def getDifference(arr):
-    
     #Is the array size even or odd
     even = True if int(arr_size) % 2 == 0 else False
     count = 0
     left = 0
     right = 0
     
-    #Even and odd have different formula for calculating Z value.
+    #Even and odd list size have different formula for calculating Z value.
     if even:
         half = int(arr_size)/2
         while count <= int(arr_size):
@@ -72,7 +71,6 @@ def getDifference(arr):
 
 #Get Valid Input from user
 getInput = True
-
 while getInput:
     print("Please enter number of person, person is represented in number, the number of person should be more than or equal to 3: ")
     arr_size = input()
@@ -115,10 +113,10 @@ while getInput:
     else:
         print("Please enter a positive integer only.\n")
     
+#Largest value for removing from comparison
 largest_const = int(rel_largest) + 100
 
-
-#Generating Random Array with random values
+#Generating Random Array(list) with random values
 relation_table_init = getArray(int(arr_size),int(rel_largest),int(rel_smallest))
 z = 0
 allCost = []
@@ -183,11 +181,10 @@ while z < len(relation_table_init):
             allCost.append(totalCost)
 
 #Z value (Difference between left and right)
-z_value = []
 #Get index of all solution with same lowest cost
 indices_lowest_cost = [i for i, x in enumerate(allCost) if x == min(allCost)]
-    
 #Get Z value for each equal lowest cost solution
+z_value = []
 for x in indices_lowest_cost:
     z_value.append([getDifference(all_solution_and_cost[x][0]),x])
 
@@ -195,11 +192,18 @@ for x in indices_lowest_cost:
 final_chosen_solution_index = z_value.index(min(z_value))
 final_chosen_solution = all_solution_and_cost[z_value[final_chosen_solution_index][1]]
 
+
+#Final Solution details output
+string_solution = ""
 print("Final Optimal Solution Chosen")
 print("==================")
 print("Solution : ")
-for x in final_chosen_solution[0]:
-    print("Lowest cost from person " + str(x[0]) + " to next person is " + str(x[1]))
+for x in range(len(final_chosen_solution[0])):
+    if x < len(final_chosen_solution[0]):
+        string_solution += "Person " + str(final_chosen_solution[0][x][0]) + "\t(Optimal Cost to next person :" + str(final_chosen_solution[0][x][1]) + "\t) ->\n"
+    if x+1 == len(final_chosen_solution[0]):
+        string_solution += "Person " + str(final_chosen_solution[0][0][0]) + "\t(Back to starting person.)"
+print(string_solution)
 print("Cost : ")
 print(final_chosen_solution[1])
 print("Z Value : ")
