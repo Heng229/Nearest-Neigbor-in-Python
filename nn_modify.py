@@ -103,7 +103,7 @@ while getInput:
     
     if rel_smallest.isnumeric():
         if int(rel_smallest) > int(rel_largest):
-            print("Smallest relationship value must higher than largest relationship value.\n")
+            print("Smallest relationship value must smaller than largest relationship value.\n")
             
         elif int(rel_smallest)-int(rel_largest) == 0:
             print("Smallest relationship value must have difference between largest relationship value.\n")
