@@ -30,6 +30,7 @@ def getDifference(arr):
     
     #Even and odd list size have different formula for calculating Z value.
     if even:
+        #Example: (ABCD) Even People count -> A+B - C+D = |Z|
         half = int(arr_size)/2
         while count <= int(arr_size):
             if count == 0: 
@@ -43,6 +44,7 @@ def getDifference(arr):
                     right += arr[x][1]
                 count += int(half)
     else:
+        #Example: (ABCDE) Odd People count -> A+B+C - C+D+E = |Z|
         half = math.ceil(int(arr_size)/2)
         while count <= int(arr_size):
             if count == 0: 
@@ -60,12 +62,12 @@ def getDifference(arr):
     
     z = abs(left-right)
     print("~~~~~~")
-    print("Z Value Calculation")
+    print("Z Value Calculation for Solution " + str(arr[0][0]+1))
     print("~~~~~~")
     print("Initial State : " + str(arr[0][0]))
-    print("Left : " + str(left))
-    print("Right: " + str(right))
-    print("Z: " + str(z))
+    print("Left : " + str(int(left)))
+    print("Right: " + str(int(right)))
+    print("Z: " + str(int(z)))
     print("~~~~~~\n")
     return z
 
@@ -205,6 +207,6 @@ for x in range(len(final_chosen_solution[0])):
         string_solution += "Person " + str(final_chosen_solution[0][0][0]) + "\t(Back to starting person.)"
 print(string_solution)
 print("Cost : ")
-print(final_chosen_solution[1])
+print(int(final_chosen_solution[1]))
 print("Z Value : ")
 print(int(min(z_value)[0]))
